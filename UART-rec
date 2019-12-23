@@ -1,0 +1,53 @@
+#include<reg51.h> //Initialize the header files
+int i,j,k,flag=0;
+char a[8];
+void main(void)
+{
+TMOD=0x20;//Initialize timer in serial communication 8 bit Auto reload mode.
+TH1=0xFD;//Initialize Baud rate of 9600 in higher order bit of timer
+TL1=0xFD;//Initialize Baud rate of 9600 in lower order bit of timer
+IE=0x90;//Enable interrupt in serial communication
+SCON=0x50;//Enable serial communication
+TR1=1;//staring timer
+while(1)
+{
+if(flag==1) //if flag equal to one then transmit
+{
+flag=0;// again flag equal to zero
+SBUF=a[k];
+k++;
+TI=0;
+}
+}
+}
+void isr(void) interrupt 4 
+{
+if(RI==1)//if Receiver bit is high then receive
+{
+while(SBUF!='#')//untill last bit equal to '#'
+{
+a[k]=SBUF;//Receive the data
+k++;//incerement to next position of array
+}
+flag=1;
+RI=0;//clear Receiver bit
+}
+if(TI==1)
+{
+SBUF=a[k];
+if(k==7)
+{
+for(i=0;i<250;i++)
+{
+for(j=0;j<250;j++)
+{
+}
+}
+k=0;
+}
+else
+{
+k++;
+}
+}
+}
